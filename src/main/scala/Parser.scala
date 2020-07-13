@@ -1,7 +1,5 @@
-trait Parser[O] {
-  def const[I](i: I): Parser[O]
-}
+object Parser {
+  type Parser[A] = String => List[(A, String)]
 
-class StringParser extends Parser[String] {
-  override def const[I](i: I): Parser[String] = ???
+  def const[A](a: A): Parser[A] = input => List((a, input))
 }
