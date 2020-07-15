@@ -19,7 +19,12 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
 
   "item" should "consume the first character if input is non-empty" in {
     val input = "consume"
-    Parser.item(input) shouldBe List(input.head, input.tail)
+    Parser.item(input) shouldBe List((input.head, input.tail))
+  }
+
+  it should "handle input with one character" in {
+    val input = "c"
+    Parser.item(input) shouldBe List(('c', ""))
   }
 
   it should "fail if input is empty" in {

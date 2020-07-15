@@ -3,7 +3,9 @@ object Parser {
 
   def const[A](a: A): Parser[A] = input => List((a, input))
 
-  def zero[A](a: A): Parser[A] = ???
+  def zero[A](a: A): Parser[A] = _ => List()
 
-  def item[A]: Parser[A] = ???
+  def item: Parser[Char] = input => {
+    input.headOption.fold(List.empty[(Char, String)])(c => List((c, input.tail)))
+  }
 }
