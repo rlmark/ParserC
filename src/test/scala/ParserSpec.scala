@@ -44,6 +44,6 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     val parser1: Parser[String] = Parser.const("one")
     val parser2: Parser[String] = Parser.zero
 
-    Parser.sequence(parser1, parser2)("input") shouldBe List(("one", List()), List())
+    Parser.sequence(parser1, parser2)("input") shouldBe List()
   }
 }
