@@ -34,5 +34,6 @@ object Parser {
       }
   }
 
+  def satisfies(predicate: Char => Boolean): Parser[Char] = ???
 
 }
