@@ -16,4 +16,7 @@ object Parser {
       }
     }
   }
+
+  def bind[A,B](a: Parser[A])(function: A => Parser[B]): Parser[B] = ???
+
 }
