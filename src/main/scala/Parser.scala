@@ -17,6 +17,14 @@ object Parser {
     }
   }
 
+  def sequenceByBind[A, B](a: Parser[A], b: Parser[B]): Parser[(A, B)] = {
+    bind(a) { a1: A => bind(b)
+              { b1: B => input2 =>
+                List(((a1, b1), input2))
+              }
+    }
+  }
+
   def bind[A, B](a: Parser[A])(f: A => Parser[B]): Parser[B] = {
     (input: String) =>
       a(input).flatMap { case (a: A, s: String) =>

@@ -47,6 +47,21 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     Parser.sequence(parser1, parser2)("input") shouldBe List()
   }
 
+  "sequenceByBind" should "handle sequence" in {
+    val parser1: Parser[String] = Parser.const("one")
+    val parser2: Parser[String] = Parser.const("two")
+
+    // Combine the two parsers into a new parser, and then we feed it input
+    Parser.sequenceByBind(parser1, parser2)("input") shouldBe List((("one", "two"), "input"))
+  }
+
+  it should "handle when one parser is the zero parser" in {
+    val parser1: Parser[String] = Parser.const("one")
+    val parser2: Parser[String] = Parser.zero
+
+    Parser.sequenceByBind(parser1, parser2)("input") shouldBe List()
+  }
+
   "bind" should "chain parser results" in {
     val parser1: Parser[String] = Parser.const("one")
     val parser2: Parser[String] = Parser.const("two")
