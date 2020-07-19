@@ -53,6 +53,16 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     val seqParser: Parser[(String, String)] =  Parser.sequence(parser1, parser2)
     def f(tuple: (String, String)): Parser[String] = Parser.const[String](tuple._1.toUpperCase)
 
-    Parser.bind(seqParser)(f)("input") shouldBe List(("One", "Two"), "input")
+    Parser.bind(seqParser)(f)("input") shouldBe List(("ONE", "input"))
+  }
+
+  it should "chain zero parser results" in {
+    val parser1: Parser[String] = Parser.zero
+    val parser2: Parser[String] = Parser.const("two")
+    val seqParser: Parser[(String, String)] =  Parser.sequence(parser1, parser2)
+
+    def f(tuple: (String, String)): Parser[String] = Parser.const[String](tuple._2.toUpperCase)
+
+    Parser.bind(seqParser)(f)("input") shouldBe List()
   }
 }

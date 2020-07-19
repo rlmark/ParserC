@@ -17,6 +17,14 @@ object Parser {
     }
   }
 
-  def bind[A,B](a: Parser[A])(function: A => Parser[B]): Parser[B] = ???
+  def bind[A, B](a: Parser[A])(f: A => Parser[B]): Parser[B] = {
+    (input: String) =>
+      a(input).flatMap { case (a: A, s: String) =>
+        val fa: Parser[B] = f(a)
+        val b: List[(B, String)] = fa(s)
+        b
+      }
+  }
+
 
 }
