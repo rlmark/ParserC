@@ -45,5 +45,7 @@ object Parser {
     bind(p1){char => if(predicate(char)) pure(char) else zero}
   }
 
-  def char(character: Char): Parser[Char] = ???
+  def char(character: Char): Parser[Char] = Parser.satisfies(x => x == character)
+
+  def digit: Parser[Char] = ???
 }

@@ -104,4 +104,16 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   "char" should "parse single character if the character matches" in {
     Parser.char('e')("enjoyment") shouldBe List(('e', "njoyment"))
   }
+
+  it should "return an empty list if character does not match" in {
+    Parser.char('e')("nope") shouldBe List()
+  }
+
+  "digit" should "parse character as digit if valid" in {
+    Parser.digit("1test") shouldBe List(('1', "test"))
+  }
+
+  it should "return an empty list if character is not valid digit" in {
+    Parser.digit("test") shouldBe List()
+  }
 }
