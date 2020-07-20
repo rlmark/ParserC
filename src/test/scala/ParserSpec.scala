@@ -3,15 +3,15 @@ import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
 class ParserSpec extends AnyFlatSpecLike with Matchers {
-  "const" should "succeed returning value without consuming any input" in {
+  "pure" should "succeed returning value without consuming any input" in {
     val value = 1
     val input = "1"
-    Parser.const(value)(input) shouldBe List((value, input))
+    Parser.pure(value)(input) shouldBe List((value, input))
   }
 
   it should "should handle empty input" in {
     val value = 1
-    Parser.const(value)("") shouldBe List((value, ""))
+    Parser.pure(value)("") shouldBe List((value, ""))
   }
 
   "zero" should "fail regardless of input" in {
@@ -33,50 +33,50 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   }
 
   "sequence" should "apply two parsers and return a pair of results" in {
-    val parser1: Parser[String] = Parser.const("one")
-    val parser2: Parser[String] = Parser.const("two")
+    val parser1: Parser[String] = Parser.pure("one")
+    val parser2: Parser[String] = Parser.pure("two")
 
     // Combine the two parsers into a new parser, and then we feed it input
     Parser.sequence(parser1, parser2)("input") shouldBe List((("one", "two"), "input"))
   }
 
   it should "handle when one parser is the zero parser" in {
-    val parser1: Parser[String] = Parser.const("one")
+    val parser1: Parser[String] = Parser.pure("one")
     val parser2: Parser[String] = Parser.zero
 
     Parser.sequence(parser1, parser2)("input") shouldBe List()
   }
 
   "sequenceByBind" should "handle sequence" in {
-    val parser1: Parser[String] = Parser.const("one")
-    val parser2: Parser[String] = Parser.const("two")
+    val parser1: Parser[String] = Parser.pure("one")
+    val parser2: Parser[String] = Parser.pure("two")
 
     // Combine the two parsers into a new parser, and then we feed it input
     Parser.sequenceByBind(parser1, parser2)("input") shouldBe List((("one", "two"), "input"))
   }
 
   it should "handle when one parser is the zero parser" in {
-    val parser1: Parser[String] = Parser.const("one")
+    val parser1: Parser[String] = Parser.pure("one")
     val parser2: Parser[String] = Parser.zero
 
     Parser.sequenceByBind(parser1, parser2)("input") shouldBe List()
   }
 
   "bind" should "chain parser results" in {
-    val parser1: Parser[String] = Parser.const("one")
-    val parser2: Parser[String] = Parser.const("two")
+    val parser1: Parser[String] = Parser.pure("one")
+    val parser2: Parser[String] = Parser.pure("two")
     val seqParser: Parser[(String, String)] =  Parser.sequence(parser1, parser2)
-    def f(tuple: (String, String)): Parser[String] = Parser.const[String](tuple._1.toUpperCase)
+    def f(tuple: (String, String)): Parser[String] = Parser.pure[String](tuple._1.toUpperCase)
 
     Parser.bind(seqParser)(f)("input") shouldBe List(("ONE", "input"))
   }
 
   it should "chain zero parser results" in {
     val parser1: Parser[String] = Parser.zero
-    val parser2: Parser[String] = Parser.const("two")
+    val parser2: Parser[String] = Parser.pure("two")
     val seqParser: Parser[(String, String)] =  Parser.sequence(parser1, parser2)
 
-    def f(tuple: (String, String)): Parser[String] = Parser.const[String](tuple._2.toUpperCase)
+    def f(tuple: (String, String)): Parser[String] = Parser.pure[String](tuple._2.toUpperCase)
 
     Parser.bind(seqParser)(f)("input") shouldBe List()
   }

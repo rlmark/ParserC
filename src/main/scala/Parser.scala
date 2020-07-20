@@ -3,7 +3,7 @@
 object Parser {
   type Parser[A] = String => List[(A, String)]
 
-  def const[A](a: A): Parser[A] = input => List((a, input))
+  def pure[A](a: A): Parser[A] = input => List((a, input))
 
   def zero[A]: Parser[A] = _ => List()
 
@@ -42,6 +42,6 @@ object Parser {
 
   def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = {
     val p1: Parser[Char] = (input: String) => Parser.item(input)
-    bind(p1){char => if(predicate(char)) const(char) else zero}
+    bind(p1){char => if(predicate(char)) pure(char) else zero}
   }
 }
