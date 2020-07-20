@@ -100,4 +100,8 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     def predicate(c: Char): Boolean = c == ('c')
     Parser.satisfiesWithBind(predicate)("nope") shouldBe List()
   }
+
+  "char" should "parse single character if the character matches" in {
+    Parser.char('e')("enjoyment") shouldBe List(('e', "njoyment"))
+  }
 }

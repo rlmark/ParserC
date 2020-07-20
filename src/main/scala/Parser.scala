@@ -44,4 +44,6 @@ object Parser {
     val p1: Parser[Char] = (input: String) => Parser.item(input)
     bind(p1){char => if(predicate(char)) pure(char) else zero}
   }
+
+  def char(character: Char): Parser[Char] = ???
 }
