@@ -1,3 +1,5 @@
+import Parser.Parser
+
 object Parser {
   type Parser[A] = String => List[(A, String)]
 
@@ -34,6 +36,9 @@ object Parser {
       }
   }
 
-  def satisfies(predicate: Char => Boolean): Parser[Char] = ???
+  def satisfies(predicate: Char => Boolean): Parser[Char] = input => {
+    Parser.item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
+  }
 
+  def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = ???
 }
