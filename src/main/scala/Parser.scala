@@ -1,4 +1,4 @@
-import Parser.Parser
+
 
 object Parser {
   type Parser[A] = String => List[(A, String)]
@@ -40,5 +40,8 @@ object Parser {
     Parser.item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
   }
 
-  def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = ???
+  def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = {
+    val p1: Parser[Char] = (input: String) => Parser.item(input)
+    bind(p1){char => if(predicate(char)) const(char) else zero}
+  }
 }

@@ -91,7 +91,7 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     Parser.satisfies(predicate)("nope") shouldBe List()
   }
 
-  "satisfies" should "returns value and remaining input if predicate true" in {
+  "satisfiesWithBind" should "returns value and remaining input if predicate true" in {
     def predicate(c: Char): Boolean = c == ('c')
     Parser.satisfiesWithBind(predicate)("congratulations") shouldBe List(('c',"ongratulations"))
   }
