@@ -50,4 +50,6 @@ object Parser {
   def digit: Parser[Char] = satisfies(c => c.isDigit)
 
   def lower: Parser[Char] = satisfies(c => c.isLower)
+
+  def plus[A](parser1: Parser[A], parser2: Parser[A]): Parser[A] = ???
 }

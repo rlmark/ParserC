@@ -128,4 +128,25 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   it should "not parse character if it is lowercase" in {
     Parser.lower("Lowercase") shouldBe List()
   }
+
+  "plus" should "apply two parsers to the same input" in {
+    val parser1 = Parser.char('e')
+    val parser2 = Parser.digit
+
+    Parser.plus(parser1, parser2)("e1test") shouldBe List(('e','1'), ("test"))
+  }
+
+  it should "return an empty list if the first parser fails" in {
+    val parser1 = Parser.char('e')
+    val parser2 = Parser.digit
+
+    Parser.plus(parser1, parser2)("f1test") shouldBe List()
+  }
+
+  it should "return an empty list if the second parser fails" in {
+    val parser1 = Parser.char('e')
+    val parser2 = Parser.digit
+
+    Parser.plus(parser1, parser2)("etest") shouldBe List(('e', '1'), ("test"))
+  }
 }
