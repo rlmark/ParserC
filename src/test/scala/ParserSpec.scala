@@ -113,7 +113,19 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     Parser.digit("1test") shouldBe List(('1', "test"))
   }
 
+  it should "not parse multiple character as digit if valid" in {
+    Parser.digit("12test") shouldBe List(('1', "2test"))
+  }
+
   it should "return an empty list if character is not valid digit" in {
     Parser.digit("test") shouldBe List()
+  }
+
+  "lower" should "parse character if it is lowercase" in {
+    Parser.lower("lowercase") shouldBe List(('l', "owercase"))
+  }
+
+  it should "not parse character if it is lowercase" in {
+    Parser.lower("Lowercase") shouldBe List()
   }
 }

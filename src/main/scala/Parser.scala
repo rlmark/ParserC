@@ -37,15 +37,17 @@ object Parser {
   }
 
   def satisfies(predicate: Char => Boolean): Parser[Char] = input => {
-    Parser.item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
+    item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
   }
 
   def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = {
-    val p1: Parser[Char] = (input: String) => Parser.item(input)
+    val p1: Parser[Char] = (input: String) => item(input)
     bind(p1){char => if(predicate(char)) pure(char) else zero}
   }
 
-  def char(character: Char): Parser[Char] = Parser.satisfies(x => x == character)
+  def char(character: Char): Parser[Char] = satisfies(c => c == character)
 
-  def digit: Parser[Char] = ???
+  def digit: Parser[Char] = satisfies(c => c.isDigit)
+
+  def lower: Parser[Char] = satisfies(c => c.isLower)
 }
