@@ -51,5 +51,7 @@ object Parser {
 
   def lower: Parser[Char] = satisfies(c => c.isLower)
 
-  def plus[A](parser1: Parser[A], parser2: Parser[A]): Parser[A] = ???
+  def plus[A](parser1: Parser[A], parser2: Parser[A]): Parser[A] = {
+    input => parser1(input) ++ parser2(input)
+  }
 }
