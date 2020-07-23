@@ -54,4 +54,6 @@ object Parser {
   def plus[A](parser1: Parser[A], parser2: Parser[A]): Parser[A] = {
     input => parser1(input) ++ parser2(input)
   }
+
+  def string(target: String): Parser[String] = ???
 }

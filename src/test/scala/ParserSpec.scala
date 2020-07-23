@@ -157,4 +157,21 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
 
     Parser.plus(parser1, parser2)("etest") shouldBe List(('e', "test"))
   }
+  "string" should "recognize specific strings" in {
+    val target = "string"
+
+    Parser.string(target)("stringify") shouldBe List(("string", "ify"))
+  }
+
+  it should "return an empty list if the target does not match" in {
+    val target = "string"
+
+    Parser.string(target)("unstringify") shouldBe List()
+  }
+
+  it should "return an empty list if there is only partial match" in {
+    val target = "string"
+
+    Parser.string(target)("strinly") shouldBe List()
+  }
 }
