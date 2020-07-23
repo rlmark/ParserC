@@ -137,14 +137,21 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     Parser.plus(parser1, parser2)("eftest") shouldBe List(('e', "ftest"), ('e', "ftest"))
   }
 
-  it should "return an empty list if the first parser fails" in {
+  it should "return an empty list if both parsers fails" in {
     val parser1 = Parser.char('e')
     val parser2 = Parser.digit
 
     Parser.plus(parser1, parser2)("f1test") shouldBe List()
   }
 
-  it should "return an empty list if the second parser fails" in {
+  it should "return a value if the second parser succeeds" in {
+    val parser1 = Parser.char('e')
+    val parser2 = Parser.digit
+
+    Parser.plus(parser1, parser2)("1test") shouldBe List(('1', "test"))
+  }
+
+  it should "return a value if the second parser fails" in {
     val parser1 = Parser.char('e')
     val parser2 = Parser.digit
 
