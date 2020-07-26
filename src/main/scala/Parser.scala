@@ -1,4 +1,4 @@
-import Parser.string
+
 
 object Parser {
   type Parser[A] = String => List[(A, String)]
@@ -55,11 +55,44 @@ object Parser {
     input => parser1(input) ++ parser2(input)
   }
 
-  def string(target: String): Parser[String] = {
-      target match {
-        case h s_+: t => bind(char(h))(c => input => List(handleTail(c, t, input)))
+  def string(target: => String): Parser[String] = {
+    input => {
+      val parser = target match {
+        case h s_+: t => bind(char(h)) {
+          c =>
+            println(s"c: ${c}")
+            bind(string(t)){
+              s =>
+                println(s"s: ${s}")
+                println(s"p: ${h + t}")
+                pure(h + t)
+            }
+        }
         case _ => pure("")
       }
+    println(s"input: ${input}")
+    parser(input)
+  }
+  }
+
+  def debugString(target: => String): Parser[String] = {
+    input => {
+      val parser = target match {
+        case h s_+: t => bind(char(h)) {
+          c =>
+            println(s"c: ${c}")
+            bind(debugString(t)){
+              s =>
+                println(s"s: ${s}")
+                println(s"h: ${h} t: $t")
+                pure(h + t)
+            }
+        }
+        case _ => pure("")
+      }
+      println(s"input: ${input}")
+      parser(input)
+    }
   }
 
   def handleTail(c: Char, t: String, input: String): (String, String) = (c.toString + string(t)(input), input)

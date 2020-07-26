@@ -160,7 +160,7 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   "string" should "recognize specific strings" in {
     val target = "string"
 
-    Parser.string(target)("stringify") shouldBe List(("string", "ify"))
+    Parser.debugString(target)("stringify") shouldBe List(("string", "ify"))
   }
 
   it should "return an empty list if the target does not match" in {
