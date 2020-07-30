@@ -68,7 +68,7 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     val seqParser: Parser[(String, String)] =  Parser.sequence(parser1, parser2)
     def f(tuple: (String, String)): Parser[String] = Parser.pure[String](tuple._1.toUpperCase)
 
-    Parser.bind(seqParser)(f)("input") shouldBe List(("ONE", "input"))
+    Parser.flatMap(seqParser)(f)("input") shouldBe List(("ONE", "input"))
   }
 
   it should "chain zero parser results" in {
@@ -78,7 +78,7 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
 
     def f(tuple: (String, String)): Parser[String] = Parser.pure[String](tuple._2.toUpperCase)
 
-    Parser.bind(seqParser)(f)("input") shouldBe List()
+    Parser.flatMap(seqParser)(f)("input") shouldBe List()
   }
 
   "satisfies" should "returns value and remaining input if predicate true" in {

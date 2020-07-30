@@ -1,5 +1,3 @@
-
-
 object Parser {
   type Parser[A] = String => List[(A, String)]
 
@@ -20,14 +18,14 @@ object Parser {
   }
 
   def sequenceByBind[A, B](a: Parser[A], b: Parser[B]): Parser[(A, B)] = {
-    bind(a) { a1: A => bind(b)
+    flatMap(a) { a1: A => flatMap(b)
               { b1: B => input2 =>
                 List(((a1, b1), input2))
               }
     }
   }
 
-  def bind[A, B](a: Parser[A])(f: A => Parser[B]): Parser[B] = {
+  def flatMap[A, B](a: Parser[A])(f: A => Parser[B]): Parser[B] = {
     (input: String) =>
       a(input).flatMap { case (a: A, s: String) =>
         val fa: Parser[B] = f(a)
@@ -36,13 +34,18 @@ object Parser {
       }
   }
 
+  def map[A,B](a: Parser[A], f: A => B): Parser[B] = {
+    (input: String) =>
+      a(input).map(t => (f(t._1), t._2))
+  }
+
   def satisfies(predicate: Char => Boolean): Parser[Char] = input => {
     item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
   }
 
   def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = {
     val p1: Parser[Char] = (input: String) => item(input)
-    bind(p1){char => if(predicate(char)) pure(char) else zero}
+    flatMap(p1){ char => if(predicate(char)) pure(char) else zero}
   }
 
   def char(character: Char): Parser[Char] = satisfies(c => c == character)
@@ -55,13 +58,22 @@ object Parser {
     input => parser1(input) ++ parser2(input)
   }
 
+//  def stringFor(target: String): Parser[String] = {
+//    target match {
+//      case h s_+: t =>
+//        for {
+//         e <- Parser.char(h)
+//        } yield ()
+//    }
+//  }
+
   def string(target: => String): Parser[String] = {
     input => {
       val parser = target match {
-        case h s_+: t => bind(char(h)) {
+        case h s_+: t => flatMap(char(h)) {
           c =>
             println(s"c: ${c}")
-            bind(string(t)){
+            flatMap(string(t)){
               s =>
                 println(s"s: ${s}")
                 println(s"p: ${h + t}")
@@ -78,10 +90,10 @@ object Parser {
   def debugString(target: => String): Parser[String] = {
     input => {
       val parser = target match {
-        case h s_+: t => bind(char(h)) {
+        case h s_+: t => flatMap(char(h)) {
           c =>
             println(s"c: ${c}")
-            bind(debugString(t)){
+            flatMap(debugString(t)){
               s =>
                 println(s"s: ${s}")
                 println(s"h: ${h} t: $t")
