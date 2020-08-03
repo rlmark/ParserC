@@ -58,6 +58,8 @@ object Parser {
     input => parser1(input) ++ parser2(input)
   }
 
+  def letter: Parser[Char] = ???
+
 //  def stringFor(target: String): Parser[String] = {
 //    target match {
 //      case h s_+: t =>
