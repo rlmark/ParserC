@@ -62,7 +62,7 @@ object Parser {
 
   def letter: Parser[Char] = plus(lower, upper)
 
-  def alphanumeric: Parser[Char] = ???
+  def alphanumeric: Parser[Char] = plus(letter, digit)
 
 //  def stringFor(target: String): Parser[String] = {
 //    target match {
