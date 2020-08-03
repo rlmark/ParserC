@@ -183,6 +183,14 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
     Parser.alphanumeric(".1") shouldBe List()
   }
 
+  "word" should "recognize if a string is a word" in {
+    Parser.word("Yes!") shouldBe List(("Yes", "!"), ("Ye", "s!"), ("Y", "es!"), ("", "Yes!"))
+  }
+
+  it should "return an empty list if given a non word" in {
+    Parser.word("!Yes") shouldBe List()
+  }
+
   "string" should "recognize specific strings" in {
     val target = "string"
 

@@ -64,7 +64,9 @@ object Parser {
 
   def alphanumeric: Parser[Char] = plus(letter, digit)
 
-//  def stringFor(target: String): Parser[String] = {
+  def word: Parser[String] = ???
+
+  //  def stringFor(target: String): Parser[String] = {
 //    target match {
 //      case h s_+: t =>
 //        for {
