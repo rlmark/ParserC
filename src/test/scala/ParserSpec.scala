@@ -159,18 +159,28 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   }
 
   "letter" should "recognize an upper or lowercase letter" in {
-    val target1 = "sT"
-    val target2 = "Ts"
+    val input1 = "sT"
+    val input2 = "Ts"
 
-    Parser.letter(target1) shouldBe List(('s', "T"))
-    Parser.letter(target2) shouldBe List(('T', "s"))
+    Parser.letter(input1) shouldBe List(('s', "T"))
+    Parser.letter(input2) shouldBe List(('T', "s"))
   }
 
   it should "fail to parse a letter when given non letter" in {
-    val target1 = "1st"
-    val target2 = "!st"
-    Parser.letter(target1) shouldBe List()
-    Parser.letter(target2) shouldBe List()
+    val input1 = "1st"
+    val input2 = "!st"
+    Parser.letter(input1) shouldBe List()
+    Parser.letter(input2) shouldBe List()
+  }
+
+  "alphanumeric" should "recognize any alphanumeric character" in {
+    Parser.alphanumeric("a1") shouldBe List(('a', "1"))
+    Parser.alphanumeric("1a") shouldBe List(('1', "a"))
+    Parser.alphanumeric("1.") shouldBe List(('1', "."))
+  }
+
+  it should "fail to parse a character when not alphanumeric" in {
+    Parser.alphanumeric(".1") shouldBe List()
   }
 
   "string" should "recognize specific strings" in {
