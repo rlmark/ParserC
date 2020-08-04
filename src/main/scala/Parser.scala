@@ -104,6 +104,8 @@ object Parser {
     plus(result, pure("")) // There is a point at which this parser fails (!); without plus we just fail with Empty List, override previous successful parser
   }
 
+  def many[A](a: Parser[A]): Parser[List[A]] = ???
+
   //  def stringFor(target: String): Parser[String] = {
   //    target match {
   //      case h s_+: t =>

@@ -220,4 +220,13 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   "test3" should "" in {
     Parser.test3("HELLO") shouldBe List(("HEL", "LO"))
   }
+
+  "many" should "return success if it matches 0 or more times" in {
+    val letterParser = Parser.letter
+
+    Parser.many(letterParser)("c123") shouldBe List((List('c'), "123"))
+    Parser.many(letterParser)("abc123") shouldBe List((List('a','b', 'c'), "123"))
+    Parser.many(letterParser)("1a") shouldBe List(List(), "1a")
+    Parser.many(letterParser)("a") shouldBe List(List('a'), "")
+  }
 }
