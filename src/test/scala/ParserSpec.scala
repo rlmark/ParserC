@@ -208,4 +208,16 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
 
     Parser.string(target)("strinly") shouldBe List()
   }
+
+  "test" should "" in {
+    Parser.test("HELLO") shouldBe List(('H', "ELLO"))
+  }
+
+  "test2" should "" in {
+    Parser.test2("HELLO") shouldBe List(('L', "LO"))
+  }
+
+  "test3" should "" in {
+    Parser.test3("HELLO") shouldBe List(("HEL", "LO"))
+  }
 }

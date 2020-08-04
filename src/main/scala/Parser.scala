@@ -18,10 +18,11 @@ object Parser {
   }
 
   def sequenceByBind[A, B](a: Parser[A], b: Parser[B]): Parser[(A, B)] = {
-    flatMap(a) { a1: A => flatMap(b)
-              { b1: B => input2 =>
-                List(((a1, b1), input2))
-              }
+    flatMap(a) { a1: A =>
+      flatMap(b) { b1: B =>
+        input2 =>
+          List(((a1, b1), input2))
+      }
     }
   }
 
@@ -34,18 +35,18 @@ object Parser {
       }
   }
 
-  def map[A,B](a: Parser[A], f: A => B): Parser[B] = {
+  def map[A, B](a: Parser[A], f: A => B): Parser[B] = {
     (input: String) =>
       a(input).map(t => (f(t._1), t._2))
   }
 
   def satisfies(predicate: Char => Boolean): Parser[Char] = input => {
-    item(input).flatMap{ case (c, i) => if (predicate(c)) List((c, i)) else List() }
+    item(input).flatMap { case (c, i) => if (predicate(c)) List((c, i)) else List() }
   }
 
   def satisfiesWithBind(predicate: Char => Boolean): Parser[Char] = {
     val p1: Parser[Char] = (input: String) => item(input)
-    flatMap(p1){ char => if(predicate(char)) pure(char) else zero}
+    flatMap(p1) { char => if (predicate(char)) pure(char) else zero }
   }
 
   def char(character: Char): Parser[Char] = satisfies(c => c == character)
@@ -64,16 +65,53 @@ object Parser {
 
   def alphanumeric: Parser[Char] = plus(letter, digit)
 
-  def word: Parser[String] = ???
+  def test = {
+    letter
+    letter
+    letter
+  }
+
+  def test2 = {
+    flatMap(letter) { c =>
+      flatMap(letter) { c2 =>
+        flatMap(letter) {
+          c3 => pure(c3)
+        }
+      }
+    }
+  }
+
+  def test3 = {
+    flatMap(letter) { c =>
+      flatMap(letter) { c2 =>
+        flatMap(letter) {
+          c3 => pure(c.toString + c2.toString + c3.toString)
+        }
+      }
+    }
+  }
+
+  def word: Parser[String] = {
+    val result: Parser[String] =
+      flatMap(letter) { c =>
+        flatMap(word) { s =>
+          println("c: " + c);
+          println("s: " + s);
+          println("c+s: " + (c+s))
+          pure(c + s)
+        }
+      }
+    plus(result, pure("")) // There is a point at which this parser fails (!); without plus we just fail with Empty List, override previous successful parser
+  }
 
   //  def stringFor(target: String): Parser[String] = {
-//    target match {
-//      case h s_+: t =>
-//        for {
-//         e <- Parser.char(h)
-//        } yield ()
-//    }
-//  }
+  //    target match {
+  //      case h s_+: t =>
+  //        for {
+  //         e <- Parser.char(h)
+  //        } yield ()
+  //    }
+  //  }
 
   def string(target: => String): Parser[String] = {
     input => {
@@ -81,7 +119,7 @@ object Parser {
         case h s_+: t => flatMap(char(h)) {
           c =>
             println(s"c: ${c}")
-            flatMap(string(t)){
+            flatMap(string(t)) {
               s =>
                 println(s"s: ${s}")
                 println(s"p: ${h + t}")
@@ -90,9 +128,9 @@ object Parser {
         }
         case _ => pure("")
       }
-    println(s"input: ${input}")
-    parser(input)
-  }
+      println(s"input: ${input}")
+      parser(input)
+    }
   }
 
   def debugString(target: => String): Parser[String] = {
@@ -101,7 +139,7 @@ object Parser {
         case h s_+: t => flatMap(char(h)) {
           c =>
             println(s"c: ${c}")
-            flatMap(debugString(t)){
+            flatMap(debugString(t)) {
               s =>
                 println(s"s: ${s}")
                 println(s"h: ${h} t: $t")
@@ -119,5 +157,7 @@ object Parser {
 }
 
 object s_+: {
-  def unapply(s: String): Option[(Char, String)] = s.headOption.map{ (_, s.tail) }
+  def unapply(s: String): Option[(Char, String)] = s.headOption.map {
+    (_, s.tail)
+  }
 }
