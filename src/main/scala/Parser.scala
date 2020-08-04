@@ -97,14 +97,21 @@ object Parser {
         flatMap(word) { s =>
           println("c: " + c);
           println("s: " + s);
-          println("c+s: " + (c+s))
+          println("c+s: " + (c + s))
           pure(c + s)
         }
       }
     plus(result, pure("")) // There is a point at which this parser fails (!); without plus we just fail with Empty List, override previous successful parser
   }
 
-  def many[A](a: Parser[A]): Parser[List[A]] = ???
+  def many[A](parserA: Parser[A]): Parser[List[A]] = {
+      val maybeSuccess: Parser[List[A]] = flatMap(parserA) { a =>
+        flatMap(many(parserA)) { (as: List[A]) =>
+          pure(a +: as)
+        }
+      }
+    plus(maybeSuccess, pure(List()))
+  }
 
   //  def stringFor(target: String): Parser[String] = {
   //    target match {
