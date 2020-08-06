@@ -113,6 +113,16 @@ object Parser {
     plus(maybeSuccess, pure(List()))
   }
 
+  def many1[A](parserA: Parser[A]): Parser[List[A]] = {
+    flatMap(parserA) { a =>
+      flatMap(many(parserA)) { (as: List[A]) =>
+        pure(a +: as)
+      }
+    }
+  }
+
+  def nat: Parser[Int] = ???
+
   //  def stringFor(target: String): Parser[String] = {
   //    target match {
   //      case h s_+: t =>

@@ -224,9 +224,26 @@ class ParserSpec extends AnyFlatSpecLike with Matchers {
   "many" should "return success if it matches 0 or more times" in {
     val letterParser = Parser.letter
 
-    Parser.many(letterParser)("c123") shouldBe List((List('c'), "123"))
-    Parser.many(letterParser)("abc123") shouldBe List((List('a','b', 'c'), "123"))
-    Parser.many(letterParser)("1a") shouldBe List(List(), "1a")
-    Parser.many(letterParser)("a") shouldBe List(List('a'), "")
+    Parser.many(letterParser)("c123") shouldBe List((List('c'), "123"), (List(), "c123"))
+    Parser.many(letterParser)("abc123") shouldBe List((List('a', 'b', 'c'),"123"), (List('a', 'b'),"c123"), (List('a'),"bc123"), (List(),"abc123"))
+    Parser.many(letterParser)("1a") shouldBe List((List(),"1a"))
+    Parser.many(letterParser)("a") shouldBe List((List('a'), ""), (List(), "a"))
+  }
+
+  "many1" should "return success if it matches one or more times" in {
+    val letterParser = Parser.letter
+
+    Parser.many1(letterParser)("c123") shouldBe List((List('c'), "123"))
+    Parser.many1(letterParser)("abc123") shouldBe List((List('a', 'b', 'c'),"123"), (List('a', 'b'),"c123"), (List('a'),"bc123"))
+    Parser.many1(letterParser)("a") shouldBe List((List('a'), ""))
+    Parser.many1(letterParser)("1a") shouldBe List()
+  }
+
+  "nat" should "return success when there is at least one digit" in {
+    val digitParser = Parser.digit
+
+    Parser.many1(digitParser)("1a") shouldBe List((List(1), "a"))
+    Parser.many1(digitParser)("12a") shouldBe List((List(1, 2), "a"), (List(1), "2a"))
+    Parser.many1(digitParser)("a12") shouldBe List()
   }
 }
